@@ -1,5 +1,5 @@
 type Node<T> = {
-    val?: T;
+    val: T;
     next?: Node<T>;
 };
 
