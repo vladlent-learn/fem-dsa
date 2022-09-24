@@ -55,16 +55,10 @@ export default class SinglyLinkedList<T> {
         }
 
         this.length++;
-
-        if (this.length === 2) {
-            this.tail = node.next;
-        }
     }
 
     insertAt(item: T, idx: number): void {
         if (idx > this.length - 1) return;
-
-        this.length++;
 
         if (idx === 0) {
             this.prepend(item);
@@ -76,6 +70,7 @@ export default class SinglyLinkedList<T> {
 
             node.next = prev.next;
             prev.next = node;
+            this.length++;
         }
     }
 
@@ -88,10 +83,6 @@ export default class SinglyLinkedList<T> {
             this.tail = node;
             this.length++;
         }
-
-        if (this.length === 2) {
-            this.head!.next = this.tail;
-        }
     }
 
     remove(item: T): T | undefined {
@@ -101,7 +92,7 @@ export default class SinglyLinkedList<T> {
 
         while (current && current.next) {
             if (current.next?.val === item) {
-                this.removeNode(current, current.next);
+                return this.removeNode(current, current.next);
             }
             current = current.next;
         }
