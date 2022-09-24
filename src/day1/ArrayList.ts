@@ -21,10 +21,6 @@ export default class ArrayList<T> {
         this.arr = newArr;
     }
 
-    private swap(i: number, j: number) {
-        [this.arr[i], this.arr[j]] = [this.arr[j], this.arr[i]];
-    }
-
     prepend(item: T): void {
         this.insertAt(item, 0);
     }
