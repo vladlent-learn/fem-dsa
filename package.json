@@ -18,6 +18,7 @@
         "clear": "node ./scripts/clear.js",
         "prettier": "prettier --write ./src",
         "generate": "node ./scripts/generate.js",
-        "day": "echo src\\day2"
+        "day": "echo src\\day2",
+        "debug": "ts-node src/day1/Trie.ts"
     }
 }

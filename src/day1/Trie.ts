@@ -1,6 +1,6 @@
 export class Node {
     isWord = false;
-    children: Node[] = [];
+    children: (Node | undefined)[] = [];
 
     constructor(public val: string) {}
 }
@@ -10,6 +10,23 @@ export default class Trie {
 
     private getIndex(char: string): number {
         return char.charCodeAt(0) - "a".charCodeAt(0);
+    }
+
+    private getNode(str: string): Node | null {
+        let curr = this.head;
+
+        for (const char of str) {
+            const idx = this.getIndex(char);
+            let next = curr.children[idx];
+
+            if (next) {
+                curr = next;
+            } else {
+                return null;
+            }
+        }
+
+        return curr;
     }
 
     private findWords(
@@ -32,6 +49,28 @@ export default class Trie {
         return result;
     }
 
+    // TODO: Refactor
+    private deleteNode(parent: Node, partial: string[]): void {
+        const isLast = partial.length === 1;
+        const char = partial.shift() as string;
+
+        let node = parent.children[this.getIndex(char)];
+
+        if (!node) return;
+
+        const hasChildren = node.children.filter(Boolean);
+
+        if (!isLast) {
+            this.deleteNode(node, partial);
+
+            if (!hasChildren) {
+                parent.children = [];
+            }
+        } else if (hasChildren) {
+            node.isWord = false;
+        }
+    }
+
     insert(item: string): void {
         let curr = this.head;
 
@@ -50,39 +89,23 @@ export default class Trie {
         curr.isWord = true;
     }
 
-    delete(item: string): void {}
+    delete(item: string): void {
+        this.deleteNode(this.head, item.split(""));
+    }
 
     find(partial: string): string[] {
         let oneLess = partial.slice(0, -1);
-        let curr = this.head;
+        let prev = this.getNode(oneLess);
 
-        for (const char of oneLess) {
-            const idx = this.getIndex(char);
-            let next = curr.children[idx];
-
-            if (next) {
-                curr = next;
-            } else {
-                return [];
-            }
-        }
+        if (!prev) return [];
 
         // TODO: Refactor
         const idx = this.getIndex(partial[partial.length - 1]);
 
-        return this.findWords(curr.children[idx], oneLess, []);
+        return this.findWords(prev.children[idx], oneLess, []);
     }
 
     toString(): string {
         return JSON.stringify(this.head, null, 2);
     }
 }
-
-const trie = new Trie();
-trie.insert("foo");
-trie.insert("fool");
-trie.insert("foolish");
-trie.insert("bar");
-console.log(trie.find("fo").sort());
-trie.delete("fool");
-console.log(trie.find("fo").sort());
