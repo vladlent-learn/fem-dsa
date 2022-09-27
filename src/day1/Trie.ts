@@ -6,24 +6,21 @@ export class Node {
 }
 
 export default class Trie {
-    private abc: Node[] = Array.from(
-        { length: 26 },
-        (_, i) => new Node(String.fromCharCode(i)),
-    );
+    private head = new Node("");
 
     private getIndex(char: string): number {
         return char.charCodeAt(0) - "a".charCodeAt(0);
     }
 
     insert(item: string): void {
-        let curr = this.abc[this.getIndex(item[0])];
+        let curr = this.head;
 
-        for (let i = 1; i < item.length; i++) {
-            const idx = this.getIndex(item[i]);
+        for (const char of item) {
+            const idx = this.getIndex(char);
             let next = curr.children[idx];
 
             if (!next) {
-                next = new Node(item[i]);
+                next = new Node(char);
                 curr.children[idx] = next;
             }
 
@@ -41,7 +38,7 @@ export default class Trie {
     }
 
     toString(): string {
-        return JSON.stringify(this.abc, null, 2);
+        return JSON.stringify(this.head, null, 2);
     }
 }
 
