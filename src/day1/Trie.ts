@@ -12,6 +12,26 @@ export default class Trie {
         return char.charCodeAt(0) - "a".charCodeAt(0);
     }
 
+    private findWords(
+        head: Node | undefined,
+        partial: string,
+        result: string[],
+    ): string[] {
+        if (!head) return result;
+
+        const newPartial = partial + head.val;
+
+        if (head.isWord) {
+            result.push(newPartial);
+        }
+
+        for (const child of head.children) {
+            this.findWords(child, newPartial, result);
+        }
+
+        return result;
+    }
+
     insert(item: string): void {
         let curr = this.head;
 
@@ -33,8 +53,24 @@ export default class Trie {
     delete(item: string): void {}
 
     find(partial: string): string[] {
-        const result = [];
-        return [];
+        let oneLess = partial.slice(0, -1);
+        let curr = this.head;
+
+        for (const char of oneLess) {
+            const idx = this.getIndex(char);
+            let next = curr.children[idx];
+
+            if (next) {
+                curr = next;
+            } else {
+                return [];
+            }
+        }
+
+        // TODO: Refactor
+        const idx = this.getIndex(partial[partial.length - 1]);
+
+        return this.findWords(curr.children[idx], oneLess, []);
     }
 
     toString(): string {
@@ -47,4 +83,6 @@ trie.insert("foo");
 trie.insert("fool");
 trie.insert("foolish");
 trie.insert("bar");
-console.log(trie.toString());
+console.log(trie.find("fo").sort());
+trie.delete("fool");
+console.log(trie.find("fo").sort());
