@@ -1,4 +1,4 @@
-export class Node {
+class Node {
     isWord = false;
     children: (Node | undefined)[] = [];
 
@@ -49,7 +49,6 @@ export default class Trie {
         return result;
     }
 
-    // TODO: Refactor
     private deleteNode(parent: Node, partial: string[]): void {
         const isLast = partial.length === 1;
         const char = partial.shift() as string;
@@ -62,12 +61,12 @@ export default class Trie {
 
         if (!isLast) {
             this.deleteNode(node, partial);
-
-            if (!hasChildren) {
-                parent.children = [];
-            }
         } else if (hasChildren) {
             node.isWord = false;
+        }
+
+        if (!hasChildren) {
+            parent.children = [];
         }
     }
 
