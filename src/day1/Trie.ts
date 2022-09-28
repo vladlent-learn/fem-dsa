@@ -12,7 +12,7 @@ export default class Trie {
         return char.charCodeAt(0) - "a".charCodeAt(0);
     }
 
-    private getNode(str: string): Node | null {
+    private getNode(str: string): Node | undefined {
         let curr = this.head;
 
         for (const char of str) {
@@ -22,7 +22,7 @@ export default class Trie {
             if (next) {
                 curr = next;
             } else {
-                return null;
+                return undefined;
             }
         }
 
@@ -94,18 +94,6 @@ export default class Trie {
     }
 
     find(partial: string): string[] {
-        let oneLess = partial.slice(0, -1);
-        let prev = this.getNode(oneLess);
-
-        if (!prev) return [];
-
-        // TODO: Refactor
-        const idx = this.getIndex(partial[partial.length - 1]);
-
-        return this.findWords(prev.children[idx], oneLess, []);
-    }
-
-    toString(): string {
-        return JSON.stringify(this.head, null, 2);
+        return this.findWords(this.getNode(partial), partial.slice(0, -1), []);
     }
 }
